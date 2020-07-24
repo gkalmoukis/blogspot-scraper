@@ -16,7 +16,10 @@ node index.js
 > Check the console, and the files in application root dir for a csv file with the scraped data.
 ## Features
 ### Scrap articles
+### Format date
 ### Save to CSV
 ## References
 - [axios](https://github.com/axios/axios) Promise based HTTP client for the browser and node.js
-- [cheerio](https://github.com/cheeriojs/cheerio) Fast, flexible, and lean implementation of core jQuery designed specifically for the server.
+- [cheerio](https://github.com/cheeriojs/cheerio) Fast, flexible, and lean implementation of core jQuery designed specifically for the 
+server.
+- [moment](https://github.com/moment/moment/) Parse, validate, manipulate, and display dates in javascript.
