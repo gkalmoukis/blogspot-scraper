@@ -1,26 +1,11 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
-
-let posts = [];
-let urls = [
-    "https://geradinesmew.blogspot.com/2020/05/",
-    "https://geradinesmew.blogspot.com/2020/04/",
-    "https://geradinesmew.blogspot.com/2020/01/",
-    "https://geradinesmew.blogspot.com/2019/12/",
-    "https://geradinesmew.blogspot.com/2019/10/",
-    "https://geradinesmew.blogspot.com/2019/09/",
-    "https://geradinesmew.blogspot.com/2019/08/",
-    "https://geradinesmew.blogspot.com/2019/07/",
-    "https://geradinesmew.blogspot.com/2019/06/",
-    "https://geradinesmew.blogspot.com/2019/05/",
-    "https://geradinesmew.blogspot.com/2019/04/",
-    "https://geradinesmew.blogspot.com/2019/03/",
-    "https://geradinesmew.blogspot.com/2019/02/",
-    "https://geradinesmew.blogspot.com/2019/01/",
-    "https://geradinesmew.blogspot.com/2018/12/",
-    "https://geradinesmew.blogspot.com/2018/11/",
-    "https://geradinesmew.blogspot.com/2018/10/"
+const baseUrl = "https://geradinesmew.blogspot.com";
+let paths = [
+    "/2020/05/", "/2020/04/", "/2020/01/", "/2019/12/", "/2019/10/", "/2019/09/", 
+    "/2019/08/", "/2019/07/", "/2019/06/", "/2019/05/", "/2019/04/", "/2019/03/", 
+    "/2019/02/", "/2019/01/", "/2018/12/", "/2018/11/", "/2018/10/"
 ];
 const csvWriter = createCsvWriter({
     path: 'posts.csv',
@@ -31,8 +16,8 @@ const csvWriter = createCsvWriter({
         {id: 'body', title: 'Body'}
     ]
 });
-urls.forEach(url => {
-    axios.get(url)
+paths.forEach(path => {
+    axios.get(baseUrl+path)
     .then(response => {
         const html = response.data;
         const $ = cheerio.load(html);
@@ -41,15 +26,16 @@ urls.forEach(url => {
             let title = $(this).find('div > h3 > a').text().trim();
             let body = $(this).find('.post-body').text();
             let uploadedAt = $(this).find('div > div.post-footer > div.post-footer-line.post-footer-line-1 > span.post-timestamp > a').text();
-            let post = [{
+            let post = {
                 title: title,
                 uploadedAt: uploadedAt,
                 link: link,
                 body: body
-            }];
-            // posts.push(post);
-            csvWriter.writeRecords(post)
-            .then( () => {  console.log('write successfully') });
+            };
+            csvWriter.writeRecords([post])
+            .then( () => {  
+                console.info(`${title} saved to file`); 
+            });
         });
     })
     .catch(error => {
