@@ -1,2 +1,2 @@
 const axios = require('axios');
-const axios = require('cheerio');
+const cheerio = require('cheerio');
