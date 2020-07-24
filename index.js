@@ -1,5 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
+const createCsvWriter = require('csv-writer').createObjectCsvWriter;
+
 let posts = [];
 let urls = [
     "https://geradinesmew.blogspot.com/2020/05/",
@@ -20,6 +22,15 @@ let urls = [
     "https://geradinesmew.blogspot.com/2018/11/",
     "https://geradinesmew.blogspot.com/2018/10/"
 ];
+const csvWriter = createCsvWriter({
+    path: 'posts.csv',
+    header: [
+        {id: 'title', title: 'Title'},
+        {id: 'uploadedAt', title: 'Date'},
+        {id: 'link', title: 'Link'},
+        {id: 'body', title: 'Body'}
+    ]
+});
 urls.forEach(url => {
     axios.get(url)
     .then(response => {
@@ -30,13 +41,15 @@ urls.forEach(url => {
             let title = $(this).find('div > h3 > a').text().trim();
             let body = $(this).find('.post-body').text();
             let uploadedAt = $(this).find('div > div.post-footer > div.post-footer-line.post-footer-line-1 > span.post-timestamp > a').text();
-            let post = {
+            let post = [{
                 title: title,
                 uploadedAt: uploadedAt,
                 link: link,
                 body: body
-            }
-            posts.push(post);
+            }];
+            // posts.push(post);
+            csvWriter.writeRecords(post)
+            .then( () => {  console.log('write successfully') });
         });
     })
     .catch(error => {
